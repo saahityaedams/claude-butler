@@ -36,11 +36,11 @@ export default function NotesScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ThemedView style={styles.container}>
+    <ThemedView style={styles.container}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
         <TextInput
           style={styles.input}
           multiline
@@ -54,8 +54,8 @@ export default function NotesScreen() {
         >
           <ThemedText style={styles.saveButtonText}>Save Note</ThemedText>
         </TouchableOpacity>
-      </ThemedView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ThemedView>
   );
 }
 
@@ -63,6 +63,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#fff',
+  },
+  keyboardView: {
+    flex: 1,
+    width: '100%',
   },
   input: {
     flex: 1,
@@ -72,6 +77,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     textAlignVertical: 'top',
+    backgroundColor: '#fff',
+    minHeight: 200,
   },
   saveButton: {
     backgroundColor: '#007AFF',
