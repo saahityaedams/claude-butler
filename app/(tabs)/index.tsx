@@ -13,7 +13,14 @@ interface Note {
 }
 
 export default function NotesScreen() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<Note[]>([
+    {
+      id: '1',
+      title: 'Welcome to Notes',
+      content: 'This is your first note!',
+      date: new Date().toLocaleDateString(),
+    },
+  ]);
 
   useEffect(() => {
     loadNotes();
@@ -24,6 +31,9 @@ export default function NotesScreen() {
       const savedNotes = await AsyncStorage.getItem('notes');
       if (savedNotes) {
         setNotes(JSON.parse(savedNotes));
+      } else {
+        // Save initial notes if none exist
+        await AsyncStorage.setItem('notes', JSON.stringify(notes));
       }
     } catch (error) {
       console.error('Error loading notes:', error);
