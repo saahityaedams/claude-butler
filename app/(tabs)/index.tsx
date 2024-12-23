@@ -1,51 +1,61 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Link } from 'expo-router';
 import { ThemedView } from '../../components/ThemedView';
 import { ThemedText } from '../../components/ThemedText';
 
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  date: string;
-}
-
 export default function NotesScreen() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [note, setNote] = useState('');
 
-  useEffect(() => {
-    loadNotes();
-  }, []);
-
-  const loadNotes = async () => {
-    try {
-      const savedNotes = await AsyncStorage.getItem('notes');
-      if (savedNotes) {
-        setNotes(JSON.parse(savedNotes));
+  const saveNote = async () => {
+    if (note.trim()) {
+      try {
+        const timestamp = new Date().toISOString();
+        const newNote = {
+          id: timestamp,
+          content: note,
+          date: timestamp
+        };
+        
+        // Get existing notes
+        const existingNotesJson = await AsyncStorage.getItem('notes');
+        const existingNotes = existingNotesJson ? JSON.parse(existingNotesJson) : [];
+        
+        // Add new note to the beginning
+        const updatedNotes = [newNote, ...existingNotes];
+        
+        // Save back to storage
+        await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
+        
+        // Clear input
+        setNote('');
+      } catch (error) {
+        console.error('Error saving note:', error);
       }
-    } catch (error) {
-      console.error('Error loading notes:', error);
     }
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <FlatList
-        data={notes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.noteItem}>
-            <ThemedText style={styles.noteTitle}>{item.title}</ThemedText>
-            <ThemedText style={styles.noteDate}>{item.date}</ThemedText>
-          </TouchableOpacity>
-        )}
-      />
-      <TouchableOpacity style={styles.fab}>
-        <ThemedText style={styles.fabText}>+</ThemedText>
-      </TouchableOpacity>
-    </ThemedView>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <ThemedView style={styles.container}>
+        <TextInput
+          style={styles.input}
+          multiline
+          placeholder="Write your note here..."
+          value={note}
+          onChangeText={setNote}
+        />
+        <TouchableOpacity 
+          style={styles.saveButton}
+          onPress={saveNote}
+        >
+          <ThemedText style={styles.saveButtonText}>Save Note</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -54,38 +64,24 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  noteItem: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  input: {
+    flex: 1,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginBottom: 16,
+    textAlignVertical: 'top',
   },
-  noteTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  noteDate: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  fab: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  saveButton: {
     backgroundColor: '#007AFF',
-    justifyContent: 'center',
+    padding: 15,
+    borderRadius: 8,
     alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
   },
-  fabText: {
-    fontSize: 24,
+  saveButtonText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
