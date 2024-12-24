@@ -61,6 +61,7 @@ export default function NotesScreen() {
             onPress={async () => {
               if (note.trim()) {
                 const response = await getClaudeResponse(note);
+                // Only add horizontal rule if there's going to be more conversation
                 setNote(prev => `${prev}\n\nClaude's response:\n${response}\n\n---\n`);
               }
             }}
