@@ -44,10 +44,50 @@ function extractMessages(noteText: string): Message[] {
 
 interface ClaudeResponse {
   text: string;
-  inputTokens: number;
-  outputTokens: number;
+  inputTokens?: number;
+  outputTokens?: number;
 }
 
+export async function* getClaudeStreamingResponse(noteText: string): AsyncGenerator<ClaudeResponse> {
+  try {
+    const messages = extractMessages(noteText);
+    
+    const stream = await anthropic.messages.create({
+      model: "claude-3-sonnet-20240229",
+      max_tokens: 1024,
+      messages: messages,
+      stream: true,
+    });
+
+    let accumulatedText = '';
+    
+    for await (const messageChunk of stream) {
+      if (messageChunk.type === 'content_block_delta') {
+        accumulatedText += messageChunk.delta.text;
+        yield {
+          text: messageChunk.delta.text
+        };
+      }
+    }
+
+    // Final yield with token counts if available
+    if (stream.usage) {
+      yield {
+        text: '',
+        inputTokens: stream.usage.input_tokens,
+        outputTokens: stream.usage.output_tokens
+      };
+    }
+
+  } catch (error) {
+    console.error("Error streaming from Claude:", error);
+    yield {
+      text: "Sorry, I encountered an error while processing your request."
+    };
+  }
+}
+
+// Keep the old non-streaming version for compatibility
 export async function getClaudeResponse(noteText: string): Promise<ClaudeResponse> {
   try {
     const messages = extractMessages(noteText);
@@ -65,6 +105,8 @@ export async function getClaudeResponse(noteText: string): Promise<ClaudeRespons
     };
   } catch (error) {
     console.error("Error calling Claude:", error);
-    return "Sorry, I encountered an error while processing your request.";
+    return {
+      text: "Sorry, I encountered an error while processing your request."
+    };
   }
 }
