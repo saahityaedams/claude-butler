@@ -42,7 +42,13 @@ function extractMessages(noteText: string): Message[] {
   return messages;
 }
 
-export async function getClaudeResponse(noteText: string): Promise<string> {
+interface ClaudeResponse {
+  text: string;
+  inputTokens: number;
+  outputTokens: number;
+}
+
+export async function getClaudeResponse(noteText: string): Promise<ClaudeResponse> {
   try {
     const messages = extractMessages(noteText);
     
@@ -52,7 +58,11 @@ export async function getClaudeResponse(noteText: string): Promise<string> {
       messages: messages,
     });
     
-    return response.content[0].text;
+    return {
+      text: response.content[0].text,
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens
+    };
   } catch (error) {
     console.error("Error calling Claude:", error);
     return "Sorry, I encountered an error while processing your request.";

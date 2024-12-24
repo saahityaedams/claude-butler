@@ -23,6 +23,7 @@ interface Props {
 
 export default function NoteEditor({ initialNote }: Props) {
   const [note, setNote] = useState<string>("");
+  const [tokenCounts, setTokenCounts] = useState<{input: number, output: number} | null>(null);
 
   useEffect(() => {
     if (initialNote?.content) {
@@ -69,6 +70,13 @@ export default function NoteEditor({ initialNote }: Props) {
 
   return (
     <ThemedView style={styles.container}>
+      {tokenCounts && (
+        <View style={styles.tokenCounter}>
+          <ThemedText style={styles.tokenText}>
+            Tokens: {tokenCounts.input}↑ {tokenCounts.output}↓
+          </ThemedText>
+        </View>
+      )}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
@@ -92,9 +100,13 @@ export default function NoteEditor({ initialNote }: Props) {
             onPress={async () => {
               if (note.trim()) {
                 const response = await getClaudeResponse(note);
+                setTokenCounts({
+                  input: response.inputTokens,
+                  output: response.outputTokens
+                });
                 setNote(
                   (prev) =>
-                    `${prev}\n\nClaude's response:\n${response}\n\n---\n`,
+                    `${prev}\n\nClaude's response:\n${response.text}\n\n---\n`,
                 );
               }
             }}
@@ -108,6 +120,18 @@ export default function NoteEditor({ initialNote }: Props) {
 }
 
 const styles = StyleSheet.create({
+  tokenCounter: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    padding: 8,
+    borderRadius: 8,
+    zIndex: 1,
+  },
+  tokenText: {
+    fontSize: 12,
+  },
   container: {
     flex: 1,
     padding: 16,
