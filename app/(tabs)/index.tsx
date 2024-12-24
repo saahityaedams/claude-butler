@@ -6,8 +6,8 @@ import { ThemedText } from '../../components/ThemedText';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-interface Note {
-  id: string;
+export interface Note {
+  id: string; // UUID string
   content: string;
   date: string;
 }

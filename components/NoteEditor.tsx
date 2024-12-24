@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from 'uuid';
 import {
   StyleSheet,
   TextInput,
@@ -13,11 +14,7 @@ import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { router } from "expo-router";
 
-interface Note {
-  id: string;
-  content: string;
-  date: string;
-}
+import { Note } from "../app/(tabs)";
 
 interface Props {
   initialNote?: Note;
@@ -37,7 +34,7 @@ export default function NoteEditor({ initialNote }: Props) {
       try {
         const timestamp = new Date().toISOString();
         const newNote = {
-          id: initialNote?.id || timestamp,
+          id: initialNote?.id || uuidv4(),
           content: note,
           date: timestamp,
         };

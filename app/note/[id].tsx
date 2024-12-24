@@ -3,11 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import NoteEditor from '../../components/NoteEditor';
 
-interface Note {
-  id: string;
-  content: string;
-  date: string;
-}
+import { Note } from '../(tabs)';
 
 export default function EditNoteScreen() {
   const { id } = useLocalSearchParams();
