@@ -38,8 +38,11 @@ export default function NoteEditor({ initialNote }: Props) {
     if (note.trim()) {
       try {
         const timestamp = new Date().toISOString();
+        const generatedTitle = await generateNoteTitle(note);
+        
         const newNote = {
           id: initialNote?.id || uuidv4(),
+          title: generatedTitle,
           content: note,
           date: timestamp,
         };

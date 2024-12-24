@@ -48,6 +48,24 @@ interface ClaudeResponse {
   outputTokens?: number;
 }
 
+export async function generateNoteTitle(content: string): Promise<string> {
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-3-sonnet-20240229",
+      max_tokens: 50,
+      messages: [{
+        role: "user",
+        content: `Generate a short, concise title (max 5 words) for this note:\n\n${content}`
+      }],
+    });
+    
+    return response.content[0].text.trim();
+  } catch (error) {
+    console.error("Error generating title:", error);
+    return "Untitled Note";
+  }
+}
+
 export async function* getClaudeStreamingResponse(noteText: string): AsyncGenerator<ClaudeResponse> {
   try {
     const messages = extractMessages(noteText);
