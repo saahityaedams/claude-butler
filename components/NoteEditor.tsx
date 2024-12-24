@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { eventEmitter } from "../utils/events";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import {
   StyleSheet,
   TextInput,
@@ -9,7 +9,7 @@ import {
   Platform,
   View,
 } from "react-native";
-import { getClaudeResponse } from "../utils/claude";
+import { getClaudeResponse, getClaudeStreamingResponse } from "../utils/claude";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
@@ -23,7 +23,10 @@ interface Props {
 
 export default function NoteEditor({ initialNote }: Props) {
   const [note, setNote] = useState<string>("");
-  const [tokenCounts, setTokenCounts] = useState<{input: number, output: number} | null>(null);
+  const [tokenCounts, setTokenCounts] = useState<{
+    input: number;
+    output: number;
+  } | null>(null);
 
   useEffect(() => {
     if (initialNote?.content) {
@@ -60,7 +63,7 @@ export default function NoteEditor({ initialNote }: Props) {
         }
 
         // Emit event and go back to list
-        eventEmitter.emit('notesUpdated');
+        eventEmitter.emit("notesUpdated");
         router.back();
       } catch (error) {
         console.error("Error saving note:", error);
@@ -100,25 +103,25 @@ export default function NoteEditor({ initialNote }: Props) {
             onPress={async () => {
               if (note.trim()) {
                 // Add placeholder for Claude's response
-                setNote(prev => `${prev}\n\nClaude's response:\n`);
-                
+                setNote((prev) => `${prev}\n\nClaude's response:\n`);
+
                 // Stream the response
                 for await (const chunk of getClaudeStreamingResponse(note)) {
                   if (chunk.text) {
                     // Append each chunk of text as it arrives
-                    setNote(prev => `${prev}${chunk.text}`);
+                    setNote((prev) => `${prev}${chunk.text}`);
                   }
                   if (chunk.inputTokens) {
                     // Update token counts when we get them
                     setTokenCounts({
                       input: chunk.inputTokens,
-                      output: chunk.outputTokens || 0
+                      output: chunk.outputTokens || 0,
                     });
                   }
                 }
-                
+
                 // Add the separator after the response is complete
-                setNote(prev => `${prev}\n\n---\n`);
+                setNote((prev) => `${prev}\n\n---\n`);
               }
             }}
           >
@@ -132,10 +135,10 @@ export default function NoteEditor({ initialNote }: Props) {
 
 const styles = StyleSheet.create({
   tokenCounter: {
-    position: 'absolute',
+    position: "absolute",
     top: 20,
     right: 20,
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    backgroundColor: "rgba(0,0,0,0.1)",
     padding: 8,
     borderRadius: 8,
     zIndex: 1,
