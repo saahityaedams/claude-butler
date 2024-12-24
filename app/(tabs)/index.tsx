@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { getClaudeResponse } from '../../utils/claude';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedView } from '../../components/ThemedView';
 import { ThemedText } from '../../components/ThemedText';
@@ -48,12 +49,25 @@ export default function NotesScreen() {
           value={note}
           onChangeText={setNote}
         />
-        <TouchableOpacity 
-          style={styles.saveButton}
-          onPress={saveNote}
-        >
-          <ThemedText style={styles.saveButtonText}>Save Note</ThemedText>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={[styles.button, styles.saveButton]}
+            onPress={saveNote}
+          >
+            <ThemedText style={styles.buttonText}>Save Note</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.button, styles.askClaudeButton]}
+            onPress={async () => {
+              if (note.trim()) {
+                const response = await getClaudeResponse(note);
+                setNote(prev => `${prev}\n\nClaude's response:\n${response}`);
+              }
+            }}
+          >
+            <ThemedText style={styles.buttonText}>Ask Claude</ThemedText>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     </ThemedView>
   );
@@ -80,13 +94,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     minHeight: 200,
   },
-  saveButton: {
-    backgroundColor: '#007AFF',
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  button: {
+    flex: 1,
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
   },
-  saveButtonText: {
+  saveButton: {
+    backgroundColor: '#007AFF',
+  },
+  askClaudeButton: {
+    backgroundColor: '#5A45FF',
+  },
+  buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
