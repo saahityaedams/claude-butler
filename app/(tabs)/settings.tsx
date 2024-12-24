@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { ThemedView } from '../../components/ThemedView';
 import { ThemedText } from '../../components/ThemedText';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SettingsScreen() {
   const [temperature, setTemperature] = useState(0.7);
@@ -34,6 +36,15 @@ export default function SettingsScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.back()}
+        >
+          <Ionicons name="arrow-back" size={24} color="#007AFF" />
+        </TouchableOpacity>
+        <ThemedText style={styles.headerTitle}>Settings</ThemedText>
+      </View>
       <View style={styles.setting}>
         <ThemedText style={styles.label}>Claude Temperature: {temperature.toFixed(2)}</ThemedText>
         <Slider
@@ -54,6 +65,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 16,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   setting: {
     marginBottom: 24,
