@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "claude-butker",
-    "slug": "claude-butker",
+    "name": "claude-butler",
+    "slug": "claude-butler",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.claudebutker"
+      "bundleIdentifier": "com.anonymous.claudebutler"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.claudebutker"
+      "package": "com.anonymous.claudebutler"
     },
     "web": {
       "bundler": "metro",
