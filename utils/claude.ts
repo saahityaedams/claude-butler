@@ -50,9 +50,13 @@ interface ClaudeResponse {
 
 export async function generateNoteTitle(content: string): Promise<string> {
   try {
+    const tempStr = await AsyncStorage.getItem('claude_temperature');
+    const temperature = tempStr ? parseFloat(tempStr) : 0.7;
+    
     const response = await anthropic.messages.create({
       model: "claude-3-sonnet-20240229",
       max_tokens: 50,
+      temperature,
       messages: [{
         role: "user",
         content: `Generate a short, concise title (max 5 words) for this note. Return ONLY the title, with no additional explanation or punctuation:\n\n${content}`

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { eventEmitter } from '../../utils/events';
 import { StyleSheet, FlatList, TouchableOpacity, View } from 'react-native';
+import { Link } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedView } from '../../components/ThemedView';
 import { ThemedText } from '../../components/ThemedText';
@@ -57,6 +58,13 @@ export default function NotesScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <View style={styles.header}>
+        <Link href="/settings" asChild>
+          <TouchableOpacity style={styles.settingsButton}>
+            <Ionicons name="settings-outline" size={24} color="#007AFF" />
+          </TouchableOpacity>
+        </Link>
+      </View>
       <FlatList
         data={notes}
         renderItem={renderNote}
@@ -74,6 +82,14 @@ export default function NotesScreen() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: 16,
+  },
+  settingsButton: {
+    padding: 8,
+  },
   container: {
     flex: 1,
   },
