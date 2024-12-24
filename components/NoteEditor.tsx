@@ -99,15 +99,26 @@ export default function NoteEditor({ initialNote }: Props) {
             style={[styles.button, styles.askClaudeButton]}
             onPress={async () => {
               if (note.trim()) {
-                const response = await getClaudeResponse(note);
-                setTokenCounts({
-                  input: response.inputTokens,
-                  output: response.outputTokens
-                });
-                setNote(
-                  (prev) =>
-                    `${prev}\n\nClaude's response:\n${response.text}\n\n---\n`,
-                );
+                // Add placeholder for Claude's response
+                setNote(prev => `${prev}\n\nClaude's response:\n`);
+                
+                // Stream the response
+                for await (const chunk of getClaudeStreamingResponse(note)) {
+                  if (chunk.text) {
+                    // Append each chunk of text as it arrives
+                    setNote(prev => `${prev}${chunk.text}`);
+                  }
+                  if (chunk.inputTokens) {
+                    // Update token counts when we get them
+                    setTokenCounts({
+                      input: chunk.inputTokens,
+                      output: chunk.outputTokens || 0
+                    });
+                  }
+                }
+                
+                // Add the separator after the response is complete
+                setNote(prev => `${prev}\n\n---\n`);
               }
             }}
           >
