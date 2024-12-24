@@ -67,7 +67,7 @@ export default function NoteEditor({ initialNote }: Props) {
 
         // Emit event and go back to list
         eventEmitter.emit("notesUpdated");
-        router.back();
+        router.push("/(tabs)");
       } catch (error) {
         console.error("Error saving note:", error);
       }
