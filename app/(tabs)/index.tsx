@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { eventEmitter } from '../../utils/events';
 import { StyleSheet, FlatList, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedView } from '../../components/ThemedView';
@@ -17,6 +18,12 @@ export default function NotesScreen() {
 
   useEffect(() => {
     loadNotes();
+    
+    // Subscribe to notes updates
+    const unsubscribe = eventEmitter.subscribe('notesUpdated', loadNotes);
+    
+    // Cleanup subscription
+    return () => unsubscribe();
   }, []);
 
   const loadNotes = async () => {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { eventEmitter } from "../utils/events";
 import { v4 as uuidv4 } from 'uuid';
 import {
   StyleSheet,
@@ -57,7 +58,8 @@ export default function NoteEditor({ initialNote }: Props) {
           await AsyncStorage.setItem("notes", JSON.stringify(updatedNotes));
         }
 
-        // Go back to list
+        // Emit event and go back to list
+        eventEmitter.emit('notesUpdated');
         router.back();
       } catch (error) {
         console.error("Error saving note:", error);
