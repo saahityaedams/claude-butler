@@ -81,8 +81,9 @@ export default function NoteEditor({ initialNote }: Props) {
         </View>
       )}
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.keyboardView}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <TextInput
           style={styles.input}
@@ -149,10 +150,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    justifyContent: 'space-between',
   },
   keyboardView: {
     flex: 1,
     width: "100%",
+    justifyContent: 'space-between',
   },
   input: {
     flex: 1,
