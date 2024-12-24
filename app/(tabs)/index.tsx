@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 export interface Note {
   id: string; // UUID string
+  title: string;
   content: string;
   date: string;
 }
@@ -38,7 +39,6 @@ export default function NotesScreen() {
   };
 
   const renderNote = ({ item }: { item: Note }) => {
-    const preview = item.content.split('\n')[0].slice(0, 50) + (item.content.length > 50 ? '...' : '');
     const date = new Date(item.date).toLocaleDateString();
 
     return (
@@ -46,7 +46,10 @@ export default function NotesScreen() {
         style={styles.noteItem}
         onPress={() => router.push(`/note/${item.id}`)}
       >
-        <ThemedText style={styles.notePreview}>{preview}</ThemedText>
+        <ThemedText style={styles.noteTitle}>{item.title}</ThemedText>
+        <ThemedText style={styles.notePreview} numberOfLines={2}>
+          {item.content}
+        </ThemedText>
         <ThemedText style={styles.noteDate}>{date}</ThemedText>
       </TouchableOpacity>
     );
@@ -82,9 +85,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  notePreview: {
-    fontSize: 16,
+  noteTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 4,
+  },
+  notePreview: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: '#666',
   },
   noteDate: {
     fontSize: 12,
