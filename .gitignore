@@ -38,3 +38,17 @@ yarn-error.*
 app-example
 .aider*
 .env*
+
+# android
+android/build/
+android/.idea
+android/.gradle
+android/local.properties
+android/*.iml
+android/.settings
+android/app/build/
+android/*.keystore
+android/*.jks
+android/captures/
+android/.externalNativeBuild
+android/.cxx
