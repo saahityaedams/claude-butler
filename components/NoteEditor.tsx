@@ -17,7 +17,13 @@ interface Props {
 }
 
 export default function NoteEditor({ initialNote }: Props) {
-  const [note, setNote] = useState(initialNote?.content || '');
+  const [note, setNote] = useState<string>('');
+
+  useEffect(() => {
+    if (initialNote?.content) {
+      setNote(initialNote.content);
+    }
+  }, [initialNote?.content]);
 
   const saveNote = async () => {
     if (note.trim()) {
