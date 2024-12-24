@@ -9,7 +9,7 @@ import {
   Platform,
   View,
 } from "react-native";
-import { getClaudeResponse, getClaudeStreamingResponse } from "../utils/claude";
+import { getClaudeResponse, getClaudeStreamingResponse, generateNoteTitle } from "../utils/claude";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
