@@ -55,7 +55,7 @@ export async function generateNoteTitle(content: string): Promise<string> {
       max_tokens: 50,
       messages: [{
         role: "user",
-        content: `Generate a short, concise title (max 5 words) for this note:\n\n${content}`
+        content: `Generate a short, concise title (max 5 words) for this note. Return ONLY the title, with no additional explanation or punctuation:\n\n${content}`
       }],
     });
     
