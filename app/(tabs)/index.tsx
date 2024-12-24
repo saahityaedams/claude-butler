@@ -61,7 +61,7 @@ export default function NotesScreen() {
             onPress={async () => {
               if (note.trim()) {
                 const response = await getClaudeResponse(note);
-                setNote(prev => `${prev}\n\nClaude's response:\n${response}`);
+                setNote(prev => `${prev}\n\nClaude's response:\n${response}\n`);
               }
             }}
           >
