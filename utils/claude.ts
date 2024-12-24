@@ -1,10 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
-import "dotenv/config";
 
-console.log(process.env.ANTHROPIC_API_KEY);
+const ANTHROPIC_API_KEY = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY || '';
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: ANTHROPIC_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
